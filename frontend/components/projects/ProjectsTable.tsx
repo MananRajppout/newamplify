@@ -25,9 +25,9 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
   onShareClick,
 }) => {
   return (
-    <div className="bg-white shadow-all-sides overflow-hidden">
+    <div className="bg-white shadow-all-sides overflow-hidden rounded-md">
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-light-gray text-body-text font-header font-bold">
           <TableRow>
             <TableHead className="flex-1">Project Name</TableHead>
             <TableHead>Tags</TableHead>

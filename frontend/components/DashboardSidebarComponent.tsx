@@ -36,7 +36,7 @@ export default function DashboardSidebar({
       </Sheet>
 
       {/* Desktop aside */}
-      <aside className="hidden md:flex flex-col fixed top-0 left-0 h-screen w-64 bg-[#D5D6D8] shadow">
+      <aside className="hidden md:flex flex-col fixed top-0 left-0 h-screen w-68 bg-light-gray shadow">
         <div className="p-6">
           <Logo />
         </div>

@@ -45,7 +45,7 @@ const ProjectsFilter: React.FC<ProjectsFilterProps> = ({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="w-[220px] justify-start text-left rounded-none"
+            className="w-[220px] justify-start text-left rounded-none border-gray-300 text-body-text font-body"
           >
             {dateRange?.from && dateRange.to ? (
               <>
@@ -58,12 +58,13 @@ const ProjectsFilter: React.FC<ProjectsFilterProps> = ({
           </Button>
         </PopoverTrigger>
 
-        <PopoverContent align="start" className="w-auto p-0">
+        <PopoverContent align="start" className="w-auto p-0 !border-0 bg-white shadow-md">
           <Calendar
             mode="range"
             selected={dateRange}
             onSelect={onDateRangeChange}
             initialFocus
+            className="!border-0"
           />
         </PopoverContent>
       </Popover>

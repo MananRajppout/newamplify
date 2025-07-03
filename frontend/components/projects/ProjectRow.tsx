@@ -28,7 +28,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
   return (
     <TableRow
       // Entire row is clickable:
-      className="cursor-pointer hover:bg-gray-50"
+      className="cursor-pointer hover:bg-gray-50 text-body-text font-header"
       onClick={() => onRowClick(project._id)}
     >
       {/* 1) Project Name */}
@@ -61,7 +61,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
         <CustomButton
           size="sm"
           variant="outline"
-          className="bg-custom-teal"
+          className="bg-primary-blue text-white font-body hover:bg-primary-blue hover:text-white font-medium"
           onClick={() => onShareClick(project, "observer")}
         >
           Observer Link
@@ -69,7 +69,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
         <CustomButton
           size="sm"
           variant="outline"
-          className="bg-custom-teal"
+          className="bg-primary-blue text-white font-body hover:bg-primary-blue hover:text-white font-medium"
           onClick={() => onShareClick(project, "participant")}
         >
           Participant Link

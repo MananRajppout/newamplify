@@ -27,9 +27,9 @@ export default function CreditSummary({ project }: CreditSummaryProps) {
   return (
     <Card className="border-0 shadow-all-sides">
       <CardHeader>
-        <CardTitle className="text-custom-teal">Credit Summary</CardTitle>
+        <CardTitle className="text-body-text font-header">Credit Summary</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 text-body-text font-body">
         <div className="flex justify-between">
           <span className="text-sm text-gray-600">
             Original Estimated Project Credits:
@@ -66,7 +66,7 @@ export default function CreditSummary({ project }: CreditSummaryProps) {
           <div className="flex justify-end">
             <CustomButton
               className="
-      bg-gradient-to-r from-[#E29C4D] to-[rgb(234,185,94)] text-white px-3 py-2.5  
+    bg-third-button-blue text-white px-3 py-2.5  
       rounded-2xl
     "
               onClick={() => {

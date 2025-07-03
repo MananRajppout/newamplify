@@ -1,5 +1,6 @@
 /* src/styles/globals.css */
-
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
@@ -58,10 +59,12 @@
   --color-custom-black:    #000000;
   --color-custom-red:      #FF3838;
   --color-custom-green:    #07C800;
-  --color-custom-teal:     #1E656D;
+  /* --color-custom-teal:     #1E656D; */
+  --color-custom-teal:     #03214D;
   --color-custom-yellow:   #FCD860;
   --color-custom-pink:     #FF7E296E;
-  --color-custom-dark-blue-1: #00293C;
+  /* --color-custom-dark-blue-1: #00293C; */
+  --color-custom-dark-blue-1: #3E3E3E;
   --color-custom-dark-blue-2: #031F3A;
   --color-custom-dark-blue-3: #34646C;
   --color-custom-light-blue-1: #2976a5;
@@ -84,6 +87,34 @@
 
   /* — Custom font token — */
   --font-montserrat: 'Montserrat', sans-serif;
+
+
+  /* client color plates  */
+  --color-primary-blue: #03214D;
+  --color-accent-orange: #FF7014;
+  --color-third-button-blue: #6498B2;
+
+  --color-body-text: #3E3E3E;
+  --color-light-gray: #F5F5F5;
+
+  --font-header: 'Montserrat', sans-serif;
+  --font-body: 'Roboto', sans-serif;
+}
+
+body {
+  @apply font-body text-body-text
+}
+
+th {
+  @apply !text-body-text !font-header !font-bold
+}
+
+td {
+  @apply !text-body-text !font-body
+}
+
+thead {
+  @apply !bg-light-gray
 }
 
 /* 2) DARK VARIANT WHEN `.dark` IS ON <html> OR <body> */

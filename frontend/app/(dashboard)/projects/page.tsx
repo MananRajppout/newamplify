@@ -71,7 +71,7 @@ const Projects: React.FC = () => {
     setPage(1);
   }}
 />
-      <Card className="shadow-all-sides border-0 rounded-md">
+      <Card className="shadow-all-sides border-0 rounded-md !p-0">
          <div className="shadow-all-sides border-0 rounded-md">
         {projects.length === 0 && !isLoading ? (
           <NoSearchResult />

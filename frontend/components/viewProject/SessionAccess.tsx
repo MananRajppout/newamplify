@@ -21,7 +21,7 @@ const SessionAccess: React.FC<SessionAccessProps> = ({ project }) => {
     <Card className="w-full mt-10 border-0 shadow-all-sides">
       <div className="flex justify-between items-center">
         <CardHeader className="flex-1">
-          <CardTitle className="text-custom-teal">Session Access</CardTitle>
+          <CardTitle className="text-body-text font-header">Session Access</CardTitle>
         </CardHeader>
 
         <CardContent className="flex items-center gap-4">

@@ -55,9 +55,9 @@ export default function ProjectSummary({
   return (
     <Card className="border-0 shadow-all-sides">
       <CardHeader className="flex justify-between items-center">
-        <CardTitle className="text-custom-teal">Project Summary</CardTitle>
+        <CardTitle className="text-body-text font-header">Project Summary</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 text-body-text font-body">
         <div className="flex items-center gap-1">
           <span className="text-sm text-gray-600">Project Name:</span>
           <span className="font-medium">{project.name}</span>

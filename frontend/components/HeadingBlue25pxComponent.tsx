@@ -14,7 +14,7 @@ const HeadingBlue25px: React.FC<HeadingBlue25pxProps> = ({
   return (
     <h1
       className={cn(
-        'text-custom-dark-blue-1 text-2xl text-center md:text-start font-bold',
+        'text-custom-dark-blue-1 text-2xl text-center md:text-start font-bold font-header',
         className
       )}
       {...rest}
