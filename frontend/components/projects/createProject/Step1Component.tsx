@@ -91,6 +91,7 @@ const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
                   : ""}
               onChange={  formData.service === "Signature" ? handleDateChange : undefined}
               className="mt-1 w-full"
+              min={new Date().toISOString().split("T")[0]}
             />
           </div>
         </CardContent>
@@ -173,6 +174,7 @@ const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
               disabled={formData.service !== "Concierge"}
               onChange={formData.service === "Concierge" ? handleDateChange : undefined}
               className="mt-1 w-full"
+              min={new Date().toISOString().split("T")[0]}
             />
           </div>
         </CardContent>

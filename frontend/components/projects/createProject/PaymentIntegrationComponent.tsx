@@ -26,6 +26,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "components/ui/dialog";
+import { usePurchaseModal } from "./PurchaseModal";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
@@ -46,6 +47,7 @@ export const PaymentIntegration: React.FC<PaymentIntegrationProps> = ({
 
   const [showCreatedModal, setShowCreatedModal] = useState(false);
   const [createdProjectId, setCreatedProjectId] = useState<string | null>(null);
+  const { setHasAllowCloseModal } = usePurchaseModal();
 
   // 1️⃣ A helper to re-fetch the logged-in user's profile
   const refetchUser = async () => {
@@ -84,6 +86,8 @@ export const PaymentIntegration: React.FC<PaymentIntegrationProps> = ({
       setUser(updatedUser);
 
       toast.success("Payment successful");
+      setHasAllowCloseModal(false);
+      setChargeLoading(false);
       createProjectMutation.mutate();
     },
     onError: (error) => {
@@ -143,6 +147,7 @@ export const PaymentIntegration: React.FC<PaymentIntegrationProps> = ({
 
   const handleUseSavedCard = async () => {
     setChargeLoading(true);
+    setHasAllowCloseModal(true);
 
     const amountCents = Math.round(totalPurchasePrice * 100);
     if (!user.stripeCustomerId) {
@@ -155,6 +160,7 @@ export const PaymentIntegration: React.FC<PaymentIntegrationProps> = ({
       customerId: user.stripeCustomerId,
       userId: user._id!,
     });
+    
   };
 
   const hasBilling = Boolean(user.billingInfo);

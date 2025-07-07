@@ -46,6 +46,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
   const { user, setUser } = useGlobalContext();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
+  const { hasAllowCloseModal } = usePurchaseModal();
 
  const createCustomerMutation = useCreateCustomer();
 
@@ -66,7 +67,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={!hasAllowCloseModal ? setOpen : ()=> {}}>
          <Button
        className="bg-custom-teal hover:bg-custom-dark-blue-3"
        onClick={() => {
@@ -171,4 +172,60 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
   );
 };
 
-export default PurchaseModal;
+
+
+
+import  { createContext, useContext, ReactNode } from "react";
+
+interface PurchaseModalContextType {
+  hasAllowCloseModal: boolean;
+  setHasAllowCloseModal: (value: boolean) => void;
+}
+
+const PurchaseModalContext = createContext<PurchaseModalContextType | undefined>(undefined);
+
+export const usePurchaseModal = () => {
+  const context = useContext(PurchaseModalContext);
+  if (context === undefined) {
+    throw new Error("usePurchaseModal must be used within a PurchaseModalProvider");
+  }
+  return context;
+};
+
+interface PurchaseModalProviderProps {
+  children: ReactNode;
+}
+
+export const PurchaseModalProvider: React.FC<PurchaseModalProviderProps> = ({ children }) => {
+  const [hasAllowCloseModal, setHasAllowCloseModal] = useState(false);
+
+  return (
+    <PurchaseModalContext.Provider value={{ hasAllowCloseModal, setHasAllowCloseModal }}>
+      {children}
+    </PurchaseModalContext.Provider>
+  );
+};
+
+
+
+const PurchaseModalWrapper = ({
+  creditPackages,
+  purchaseQuantities,
+  totalPurchasePrice,
+  totalCreditsNeeded,
+  projectData,
+}: PurchaseModalProps) => {
+  return (
+    <PurchaseModalProvider>
+      <PurchaseModal 
+        creditPackages={creditPackages}
+        purchaseQuantities={purchaseQuantities}
+        totalPurchasePrice={totalPurchasePrice}
+        totalCreditsNeeded={totalCreditsNeeded}
+        projectData={projectData}
+      />
+    </PurchaseModalProvider>
+  );
+};
+
+export default PurchaseModalWrapper;

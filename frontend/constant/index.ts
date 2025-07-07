@@ -99,6 +99,7 @@ export const registerDefaults: RegisterFormValues = {
 
 export const loginDefaults: LoginFormValues={
    email: "",
-      password: "Ab123456@",
-      rememberMe: false,
+   password: "",
+   rememberMe: false,
+   
 }

@@ -62,7 +62,7 @@ export default function SidebarContent({
     queryKey: ["projectsByUser", userId],
     queryFn: () =>
       api
-        .get(`/api/v1/projects/get-project-by-userId/${userId}`)
+        .get(`/api/v1/projects/get-project-by-userId/${userId}?limit=10000000000000`)
         .then((r) => r.data.data),
     staleTime: 300_000,
     enabled: Boolean(userId),
@@ -118,7 +118,7 @@ export default function SidebarContent({
           </CollapsibleTrigger>
           <CollapsibleContent className="ml-2 mt-1 py-1 px-2 bg-[#F3F4F6] rounded-xl">
             <Accordion type="single" collapsible className="space-y-1">
-              {projects?.map((p) => {
+              {projects?.filter(p => p.status != "Draft").map((p) => {
                 const base = `/projects/${p._id}`;
                 return (
                   <AccordionItem key={p._id} value={p?._id}>

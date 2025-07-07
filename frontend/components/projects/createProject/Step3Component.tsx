@@ -26,7 +26,7 @@ import { TooltipContent } from "@radix-ui/react-tooltip";
 import { BiQuestionMark } from "react-icons/bi";
 import SessionsTable from "./SessionsTable";
 
-const Step3: React.FC<Step3Props> = ({ formData, updateFormData }) => {
+const Step3: React.FC<Step3Props> = ({ formData, updateFormData, setDisableNext }) => {
   // ========= Respondent Languages =========
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(
     Array.isArray(formData.respondentLanguage)
@@ -37,6 +37,22 @@ const Step3: React.FC<Step3Props> = ({ formData, updateFormData }) => {
   );
   const [otherLanguage, setOtherLanguage] = useState<string>("");
   const [projectName, setProjectName] = useState<string>(formData.name || "");
+
+
+  useEffect(() => {
+    if (formData.respondentLanguage.length > 0 && formData.respondentCountry && formData.sessions.length > 0) {
+      setDisableNext(false);
+    } else {
+      setDisableNext(true);
+    }
+
+    //project name is required
+    if (projectName.length === 0) {
+      setDisableNext(true);
+    } else {
+      setDisableNext(false);
+    }
+  }, [formData.respondentLanguage, formData.respondentCountry, formData.sessions]);
 
   // ========= Respondent Country =========
   const isInitiallyOther =

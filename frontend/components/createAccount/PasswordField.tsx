@@ -53,6 +53,7 @@ export default function PasswordField<TFieldValues extends FieldValues>({
                 type={showPassword ? "text" : "password"}
                 placeholder={placeholder}
                 {...field}
+                autoComplete="new-password"
               />
               <Button
                 type="button"

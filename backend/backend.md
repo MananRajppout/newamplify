@@ -219,7 +219,7 @@ import ProjectModel from "../model/ProjectModel";
 import User from "../model/UserModel";
 
 import config from "../config";
-import { sendEmail } from "../processors/sendEmail/SendVerifyAccountEmailProcessor";
+import { sendEmail } from "../processors/sendEmail/sendVerifyAccountEmailProcessor";
 import { moderatorAddedEmailTemplate } from "../constants/emailTemplates";
 
 /**
@@ -1251,7 +1251,7 @@ import {
   projectCreateAndPaymentConfirmationEmailTemplate,
   projectInfoEmailTemplate,
 } from "../constants/emailTemplates";
-import { sendEmail } from "../processors/sendEmail/SendVerifyAccountEmailProcessor";
+import { sendEmail } from "../processors/sendEmail/sendVerifyAccountEmailProcessor";
 import { ProjectCreateAndPaymentConfirmationEmailTemplateParams } from "../../shared/interface/ProjectInfoEmailInterface";
 
 export const saveProgress = async (
@@ -2304,12 +2304,12 @@ import {
   resetPasswordEmailTemplate,
   verificationEmailTemplate,
 } from "../constants/emailTemplates";
-import { sendEmail } from "../processors/sendEmail/SendVerifyAccountEmailProcessor";
+import { sendEmail } from "../processors/sendEmail/sendVerifyAccountEmailProcessor";
 import { sanitizeUser } from "../processors/user/RemovePasswordFromUserObjectProcessor";
 import config from "../config/index";
 
 import jwt from "jsonwebtoken";
-import { isStrongPassword } from "../processors/user/IsStrongPasswordProcessor";
+import { isStrongPassword } from "../processors/user/isStrongPasswordProcessor";
 import ProjectModel from "../model/ProjectModel";
 import { isValidEmail } from "../processors/user/IsValidEmailProcessor";
 import {

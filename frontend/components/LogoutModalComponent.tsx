@@ -30,7 +30,8 @@ const LogoutModalComponent: React.FC<LogoutModalProps> = ({
       await api.post("/api/v1/users/logout")
       localStorage.clear()
       setUser(null)
-      router.push('/login')
+      // router.push('/login')
+      window.location.href = '/login'
     } catch (error) {
       console.error('Logout error:', error)
       // Still clear local state even if server request fails

@@ -14,6 +14,7 @@ import Step2 from "components/projects/createProject/Step2Component";
 import Step3 from "components/projects/createProject/Step3Component";
 import Step4 from "components/projects/createProject/Step4Component";
 import { IProjectFormState, StepProps } from "@shared/interface/CreateProjectInterface";
+import { useRouter } from "next/navigation";
 
 /**
  * Custom hook that centralizes:
@@ -24,7 +25,7 @@ import { IProjectFormState, StepProps } from "@shared/interface/CreateProjectInt
 export function useCreateProject() {
   const { user } = useGlobalContext();
   const userId = user?._id || "";
-
+  const router = useRouter();
   // 1) form data state
   const [formData, setFormData] = useState<IProjectFormState>({
     user: userId,
@@ -123,6 +124,9 @@ const isLastStep =
     (formData.service === "Signature" && currentStep === steps.length - 1);
 
   const handleBack = () => {
+    if (currentStep === 0) {
+      router.push("/projects");
+    }
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 

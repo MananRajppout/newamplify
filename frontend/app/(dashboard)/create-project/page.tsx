@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import ComponentContainer from "components/shared/ComponentContainer";
 import CustomButton from "components/shared/CustomButton";
 import clsx from "clsx";
@@ -20,6 +20,7 @@ const CreateProjectPage: React.FC = () => {
     isLoading,
     uniqueId
   } = useCreateProject();
+  const [disableNext, setDisableNext] = useState(false);
 
     const stepTitles: Record<number, string[]> = {
     2: [
@@ -53,6 +54,7 @@ const CreateProjectPage: React.FC = () => {
           formData={formData}
           updateFormData={updateFormData}
           uniqueId={uniqueId}
+          setDisableNext={setDisableNext}
         />
 
         <div className="flex justify-between mt-6  items-center">
@@ -67,7 +69,7 @@ const CreateProjectPage: React.FC = () => {
               }
             )}
             onClick={handleBack}
-            disabled={currentStep === 0}
+            // disabled={currentStep === 0}
           >
             Back
           </CustomButton>
@@ -75,7 +77,7 @@ const CreateProjectPage: React.FC = () => {
           {!isLastStep && (
             <CustomButton
               onClick={handleNext}
-              disabled={isNextButtonDisabled() || isLoading}
+              disabled={isNextButtonDisabled() || isLoading || disableNext}
               className="bg-custom-teal hover:bg-custom-dark-blue-3"
             >
               {isLoading ? "Saving..." : "Next"}
