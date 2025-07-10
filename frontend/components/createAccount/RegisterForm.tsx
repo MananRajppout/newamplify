@@ -11,6 +11,7 @@ import { Checkbox } from "components/ui/checkbox";
 import { Button } from "components/ui/button";
 import TextInputField from "components/createAccount/TextInputField";
 import PasswordField from "components/createAccount/PasswordField";
+import PasswordFieldWithStrength from "components/createAccount/PasswordFieldWithStrength";
 
 import { useCountryList } from "hooks/useCountryList";
 import { useRegister } from "hooks/useRegister";
@@ -90,6 +91,7 @@ export default function RegisterForm() {
                     <FormControl>
                       <Input
                         placeholder="Enter your phone number"
+                        type="text"
                         {...field}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
@@ -114,11 +116,12 @@ export default function RegisterForm() {
           />
         </div>
 
-        <PasswordField
+        <PasswordFieldWithStrength
           control={form.control}
           name="password"
           label="Password"
           placeholder="Enter your password"
+          showStrengthChecker={true}
         />
 
         <PasswordField

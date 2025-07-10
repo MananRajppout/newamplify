@@ -39,7 +39,7 @@ export default function CountrySelector({
           role="combobox"
           aria-expanded={open}
           disabled={isLoading}
-          className="w-32 justify-between border-r-0 rounded-r-none"
+          className="w-14 justify-between border-r-0 rounded-r-none"
         >
           {selectedCountry ? (
             <div className="flex items-center">

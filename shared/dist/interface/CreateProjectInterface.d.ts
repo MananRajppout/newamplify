@@ -7,6 +7,7 @@ export interface StepProps {
     formData: IProjectFormState;
     updateFormData: (fields: Partial<IProjectFormState>) => void;
     uniqueId: string | null;
+    setDisableNext: (value: boolean) => void;
 }
 export interface Step1Props {
     formData: Omit<IProjectFormState, "firstDateOfStreaming" | "projectDate"> & {
@@ -39,6 +40,7 @@ export interface Step3Props {
     formData: IProjectFormState;
     updateFormData: (fields: Partial<IProjectFormState>) => void;
     uniqueId: string | null;
+    setDisableNext: (value: boolean) => void;
 }
 export interface Step4Props {
     formData: {

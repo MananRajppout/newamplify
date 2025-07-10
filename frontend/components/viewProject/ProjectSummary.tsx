@@ -11,8 +11,10 @@ import { IProject } from "@shared/interface/ProjectInterface";
 import { getFirstSessionDate } from "utils/getFirstSessionDate";
 import { useEditProjectName } from "hooks/useEditProjectName";
 import { useEditProjectDescription } from "hooks/useEditProjectDescription";
+import { useEditProjectStatus } from "hooks/useEditProjectStatus";
 import { useToggleRecordingAccess } from "hooks/useToggleRecordingAccess";
 import { Tooltip, TooltipContent, TooltipTrigger } from "components/ui/tooltip";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select";
 import { BiQuestionMark } from "react-icons/bi";
 
 interface ProjectSummaryProps {
@@ -42,6 +44,13 @@ export default function ProjectSummary({
 
   const { mutate: editDesc, isPending: isEditingDesc } =
     useEditProjectDescription(projectId);
+
+  // Status editing
+  const [editingStatus, setEditingStatus] = useState(false);
+  const [newStatus, setNewStatus] = useState(project.status);
+
+  const { mutate: editStatus, isPending: isEditingStatus } =
+    useEditProjectStatus(projectId);
 
   // Toggle recording access
   const { mutate: toggleRecording, isPending: isTogglingRecording } =
@@ -187,6 +196,57 @@ export default function ProjectSummary({
             <PencilIcon className="h-2.5 w-3" />
             {project.tags.length > 0 ? "Edit" : "Add"}
           </div>
+        </div>
+
+        <div className="flex justify-between">
+          <span className="text-sm text-gray-600">
+            Status: {project.status}
+          </span>
+          {editingStatus ? (
+            <div className="flex items-center gap-2">
+              <Select value={newStatus} onValueChange={(value) => setNewStatus(value as any)}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Draft">Draft</SelectItem>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Inactive">Inactive</SelectItem>
+                  <SelectItem value="Closed">Closed</SelectItem>
+                  <SelectItem value="Archived">Archived</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
+                size="icon"
+                onClick={() =>
+                  editStatus(
+                    { projectId, status: newStatus },
+                    {
+                      onSuccess: () => {
+                        setEditingStatus(false);
+                      },
+                    }
+                  )
+                }
+                disabled={isEditingStatus}
+              >
+                <CheckIcon className="h-4 w-4" />
+              </Button>
+              <Button size="icon" onClick={() => setEditingStatus(false)}>
+                <XIcon className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <div
+              className="flex items-center gap-1 cursor-pointer text-sm"
+              onClick={() => {
+                setNewStatus(project.status);
+                setEditingStatus(true);
+              }}
+            >
+              <PencilIcon className="h-2.5 w-2.5" /> Edit
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-1">

@@ -32,48 +32,58 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
       onClick={() => onRowClick(project._id)}
     >
       {/* 1) Project Name */}
-      <TableCell className="flex-1">
-        {project.name}
+      <TableCell className="font-medium">
+        <div className="truncate max-w-[200px] lg:max-w-none">
+          {project.name}
+        </div>
       </TableCell>
 
       {/* 2) Tags */}
       <TableCell>
-        {project.tags.length > 0
-          ? project.tags.map((t) => t.title).join(", ")
-          : "—"}
+        <div className="truncate max-w-[150px] lg:max-w-none">
+          {project.tags.length > 0
+            ? project.tags.map((t) => t.title).join(", ")
+            : "—"}
+        </div>
       </TableCell>
 
       {/* 3) Status */}
       <TableCell>
-        <Badge variant="outline">{project.status}</Badge>
+        <Badge variant="outline" className="text-xs whitespace-nowrap">
+          {project.status}
+        </Badge>
       </TableCell>
 
       {/* 4) First Session / Start Date */}
       <TableCell>
-        {firstDate ? format(firstDate, "MM/dd/yyyy") : "—"}
+        <span className="text-sm whitespace-nowrap">
+          {firstDate ? format(firstDate, "MM/dd/yyyy") : "—"}
+        </span>
       </TableCell>
 
       {/* 5) Share Buttons: stop propagation so row click still works */}
       <TableCell
-        className="space-x-2 text-center"
+        className="text-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <CustomButton
-          size="sm"
-          variant="outline"
-          className="bg-primary-blue text-white font-body hover:bg-primary-blue hover:text-white font-medium"
-          onClick={() => onShareClick(project, "observer")}
-        >
-          Observer Link
-        </CustomButton>
-        <CustomButton
-          size="sm"
-          variant="outline"
-          className="bg-primary-blue text-white font-body hover:bg-primary-blue hover:text-white font-medium"
-          onClick={() => onShareClick(project, "participant")}
-        >
-          Participant Link
-        </CustomButton>
+        <div className="flex flex-col xl:flex-row gap-1 xl:gap-2 xl:justify-center">
+          <CustomButton
+            size="sm"
+            variant="outline"
+            className="bg-primary-blue text-white font-body hover:bg-primary-blue hover:text-white font-medium text-xs px-2 py-1"
+            onClick={() => onShareClick(project, "observer")}
+          >
+            Observer
+          </CustomButton>
+          <CustomButton
+            size="sm"
+            variant="outline"
+            className="bg-primary-blue text-white font-body hover:bg-primary-blue hover:text-white font-medium text-xs px-2 py-1"
+            onClick={() => onShareClick(project, "participant")}
+          >
+            Participant
+          </CustomButton>
+        </div>
       </TableCell>
     </TableRow>
   );

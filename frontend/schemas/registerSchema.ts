@@ -1,6 +1,18 @@
 // shared/schemas/auth.ts
 import { z } from "zod";
 
+// Strong password validation function
+const validateStrongPassword = (password: string): boolean => {
+  const requirements = [
+    password.length >= 9, // At least 9 characters
+    /[A-Z]/.test(password), // Uppercase letter
+    /[a-z]/.test(password), // Lowercase letter
+    /[0-9]/.test(password), // Number
+    /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password), // Special character
+  ];
+  return requirements.every(Boolean);
+};
+
 export const registerSchema = z
   .object({
     firstName: z
@@ -26,9 +38,12 @@ export const registerSchema = z
         message: "Company Name can only contain letters and spaces",
       }),
     phoneNumber: z.string().min(10, { message: "Phone number is required" }),
-    password: z.string().min(9, {
-      message: "Password must be at least 9 characters long",
-    }),
+    password: z
+      .string()
+      .min(9, { message: "Password must be at least 9 characters long" })
+      .refine(validateStrongPassword, {
+        message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+      }),
     confirmPassword: z
       .string()
       .min(1, { message: "Please confirm your password" }),

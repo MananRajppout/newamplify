@@ -261,8 +261,8 @@ export const getProjectByUserId = async (
   next: NextFunction
 ): Promise<void> => {
   const { userId } = req.params;
-  const { search = "", page = 1, limit = 10 } = req.query;
-
+  let { search = "", page = 1, limit = 10, tags } = req.query;
+  tags = tags ? tags.toString().split(",") : [];
   if (!userId) {
     return next(new ErrorHandler("User ID is required", 400));
   }
@@ -272,23 +272,43 @@ export const getProjectByUserId = async (
   const limitNum = Math.max(Number(limit), 1);
   const skip = (pageNum - 1) * limitNum;
 
-  const searchRegex = new RegExp(search as string, "i");
+  // Ensure search is a string
+  const searchString = typeof search === 'string' ? search : '';
+  const searchRegex = new RegExp(searchString, "i");
+  
+  // Parse tags - handle both comma-separated string and array
+  const tagList = Array.isArray(tags) ? tags : 
+    (typeof tags === 'string') ? [tags] : [];
 
- const baseMatch: PipelineStage.Match = {
+  const baseMatch: PipelineStage.Match = {
     $match: {
       createdBy: new mongoose.Types.ObjectId(userId),
     },
   };
 
+  // Build search conditions - only include non-empty conditions
+  const searchConditions: any[] = [];
+  
+  // Add text search conditions if search term exists
+  if (searchString && searchString.trim().length > 0) {
+    searchConditions.push(
+      { name: { $regex: searchRegex } },
+      { "moderators.firstName": { $regex: searchRegex } },
+      { "moderators.lastName": { $regex: searchRegex } },
+      { "moderators.companyName": { $regex: searchRegex } }
+    );
+  }
+  
+
+
+  if (tagList.length > 0) {
+    const tagRegexList = tagList.map(tag => new RegExp(`^${tag}$`, 'i'));
+    searchConditions.push({ "tags.title": { $in: tagRegexList } });
+  }
+  
+
   const searchMatch: PipelineStage.Match = {
-    $match: {
-      $or: [
-        { name: { $regex: searchRegex } },
-        { "moderators.firstName": { $regex: searchRegex } },
-        { "moderators.lastName": { $regex: searchRegex } },
-        { "moderators.companyName": { $regex: searchRegex } },
-      ],
-    },
+    $match: searchConditions.length > 0 ? { $or: searchConditions } : {},
   };
 
   const aggregationPipeline: PipelineStage[] = [
@@ -302,7 +322,16 @@ export const getProjectByUserId = async (
       },
     },
     { $unwind: { path: "$moderators", preserveNullAndEmptyArrays: true } },
-    searchMatch,
+    {
+      $lookup: {
+        from: "tags",
+        localField: "tags",
+        foreignField: "_id",
+        as: "tags",
+      },
+    },
+    // Only apply search match if there are search conditions
+    ...(searchConditions.length > 0 ? [searchMatch] : []),
     {
       $lookup: {
         from: "sessions",
@@ -311,14 +340,6 @@ export const getProjectByUserId = async (
         as: "meetingObjects",
       },
     },
-      {
-    $lookup: {
-      from: "tags",
-      localField: "tags",
-      foreignField: "_id",
-      as: "tags",
-    },
-  },
     {
       $group: {
         _id: "$_id",
@@ -346,7 +367,16 @@ export const getProjectByUserId = async (
       },
     },
     { $unwind: { path: "$moderators", preserveNullAndEmptyArrays: true } },
-    searchMatch,
+    {
+      $lookup: {
+        from: "tags",
+        localField: "tags",
+        foreignField: "_id",
+        as: "tags",
+      },
+    },
+    // Only apply search match if there are search conditions
+    ...(searchConditions.length > 0 ? [searchMatch] : []),
     {
       $group: {
         _id: "$_id",
@@ -403,14 +433,14 @@ export const editProject = async (
   next: NextFunction
 ): Promise<void> => {
   // Expecting projectId in body along with the fields to be updated.
-  const { projectId, internalProjectName, description } = req.body;
+  const { projectId, internalProjectName, description,status } = req.body;
 
   if (!projectId) {
     return next(new ErrorHandler("Project ID is required", 400));
   }
 
   // Ensure at least one field to update is provided.
-  if (!internalProjectName && !description) {
+  if (!internalProjectName && !description && !status) {
     return next(new ErrorHandler("No update data provided", 400));
   }
 
@@ -426,6 +456,10 @@ export const editProject = async (
   }
   if (description) {
     project.description = description;
+  }
+
+  if (status) {
+    project.status = status;
   }
 
   console.log("req.body", req.body);
