@@ -19,10 +19,10 @@ const NoSearchResult = ({
   description
 }: NoSearchResultProps) => {
   const getIcon = () => {
-    if (filterTypes.includes("search")) return <Search className="h-48 w-48 text-gray-200" />;
-    if (filterTypes.includes("tags")) return <Tag className="h-48 w-48 text-gray-200" />;
-    if (filterTypes.includes("dateRange")) return <Calendar className="h-48 w-48 text-gray-200" />;
-    return <FolderSearch className="h-48 w-48 text-gray-200" />;
+    if (filterTypes.includes("search")) return <Search className="h-28 w-28 text-gray-200" />;
+    if (filterTypes.includes("tags")) return <Tag className="h-28 w-28 text-gray-200" />;
+    if (filterTypes.includes("dateRange")) return <Calendar className="h-28 w-28 text-gray-200" />;
+    return <FolderSearch className="h-28 w-28 text-gray-200" />;
   };
 
   const getTitle = () => {
@@ -60,13 +60,13 @@ const NoSearchResult = ({
   };
 
   return (
-    <div className={cn("flex justify-center items-center", className)}>
-      <div className="flex flex-col justify-center items-center gap-5 pt-32">
+    <div className={cn("flex justify-center items-center py-10", className)}>
+      <div className="flex flex-col justify-center items-center gap-5 pt-20">
         {getIcon()}
-        <h1 className="text-blue-900 text-4xl font-bold text-center">
+        <h1 className="text-blue-900 text-3xl font-bold text-center">
           {getTitle()}
         </h1>
-        <p className="text-center text-2xl text-blue-950 max-w-2xl">
+        <p className="text-center text-xl text-blue-950 max-w-2xl">
           {getDescription()}
         </p>
       </div>

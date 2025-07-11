@@ -301,10 +301,12 @@ export const getProjectByUserId = async (
   
 
 
+
   if (tagList.length > 0) {
-    const tagRegexList = tagList.map(tag => new RegExp(`^${tag}$`, 'i'));
+    const tagRegexList = tagList.map(tag => new RegExp(tag as string, 'i')); // remove ^ and $
     searchConditions.push({ "tags.title": { $in: tagRegexList } });
   }
+  
   
 
   const searchMatch: PipelineStage.Match = {

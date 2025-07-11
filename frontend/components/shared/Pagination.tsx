@@ -13,11 +13,53 @@ export default function CustomPagination({
   currentPage: number;
   onPageChange: (page: number) => void;
 }) {
-  // only show “1”, “2”, “…”, last
-  const pages: (number | "…")[] =
-    totalPages <= 4
-      ? Array.from({ length: totalPages }, (_, i) => i + 1)
-      : [1, 2, "…", totalPages];
+  const generatePages = (): (number | "…")[] => {
+    // If total pages is 7 or less, show all pages
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const pages: (number | "…")[] = [];
+    
+    // Always show first page
+    pages.push(1);
+    
+    if (currentPage <= 3) {
+      // If current page is near the beginning (1, 2, 3)
+      // Show: 1, 2, 3, 4, ..., last
+      pages.push(2, 3, 4);
+      if (totalPages > 5) {
+        pages.push("…");
+      }
+      if (totalPages > 4) {
+        pages.push(totalPages);
+      }
+    } else if (currentPage >= totalPages - 2) {
+      // If current page is near the end
+      // Show: 1, ..., last-3, last-2, last-1, last
+      if (totalPages > 4) {
+        pages.push("…");
+      }
+      pages.push(totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+    } else {
+      // Current page is in the middle
+      // Show: 1, ..., current-1, current, current+1, ..., last
+      pages.push("…");
+      pages.push(currentPage - 1, currentPage, currentPage + 1);
+      pages.push("…");
+      pages.push(totalPages);
+    }
+    
+    // Remove duplicates and filter out invalid pages
+    const uniquePages = pages.filter((page, index, arr) => {
+      if (typeof page === "string") return true;
+      return page >= 1 && page <= totalPages && arr.indexOf(page) === index;
+    });
+    
+    return uniquePages;
+  };
+
+  const pages = generatePages();
 
   return (
     <Pagination className="flex mt-6">

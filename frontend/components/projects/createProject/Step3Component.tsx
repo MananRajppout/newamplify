@@ -126,7 +126,10 @@ const Step3: React.FC<Step3Props> = ({ formData, updateFormData, setDisableNext 
   };
 
   const handleOtherCountryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setOtherCountry(e.target.value);
+    //if it is character a-z and A-Z then allow else return
+    if (/^[a-zA-Z]+$/.test(e.target.value)) {
+      setOtherCountry(e.target.value);
+    }
   };
 
   return (
@@ -181,7 +184,12 @@ const Step3: React.FC<Step3Props> = ({ formData, updateFormData, setDisableNext 
               type="text"
               className="mt-1 w-full"
               value={otherLanguage}
-              onChange={(e) => setOtherLanguage(e.target.value)}
+              onChange={(e) => {
+                //if it is character a-z and A-Z then allow else return
+                if (/^[a-zA-Z]+$/.test(e.target.value)) {
+                  setOtherLanguage(e.target.value);
+                }
+              }}
             />
           </div>
         )}

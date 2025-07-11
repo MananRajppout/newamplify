@@ -67,7 +67,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={!hasAllowCloseModal ? setOpen : ()=> {}}>
+    <Dialog open={open} onOpenChange={!hasAllowCloseModal ? () => {setOpen(false); setStep(1)} : ()=> {}}>
          <Button
        className="bg-custom-teal hover:bg-custom-dark-blue-3"
        onClick={() => {
