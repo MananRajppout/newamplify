@@ -103,3 +103,7 @@ export const loginDefaults: LoginFormValues={
    rememberMe: false,
    
 }
+
+export const ALPHA_REGEX = /^[A-Za-z\s]+$/;
+
+export const PROJECT_NAME_REGEX = /^[A-Za-z0-9 _-]+$/;

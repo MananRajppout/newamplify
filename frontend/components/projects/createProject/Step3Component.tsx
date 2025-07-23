@@ -12,7 +12,7 @@ import {
 } from "components/ui/select";
 import { CheckIcon } from "lucide-react";
 import { SessionRow } from "@shared/interface/ProjectInterface";
-import { availableLanguages, durations } from "constant";
+import { ALPHA_REGEX, availableLanguages, durations, PROJECT_NAME_REGEX } from "constant";
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 import {
   Command,
@@ -26,7 +26,9 @@ import { TooltipContent } from "@radix-ui/react-tooltip";
 import { BiQuestionMark } from "react-icons/bi";
 import SessionsTable from "./SessionsTable";
 
-const Step3: React.FC<Step3Props> = ({ formData, updateFormData, setDisableNext }) => {
+
+
+const Step3: React.FC<Step3Props> = ({ formData, updateFormData }) => {
   // ========= Respondent Languages =========
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(
     Array.isArray(formData.respondentLanguage)
@@ -36,8 +38,9 @@ const Step3: React.FC<Step3Props> = ({ formData, updateFormData, setDisableNext 
       : []
   );
   const [otherLanguage, setOtherLanguage] = useState<string>("");
+  const [otherLangError,  setOtherLangError]  = useState<string>("");
   const [projectName, setProjectName] = useState<string>(formData.name || "");
-
+const [projectNameError, setProjectNameError] = useState<string>("");
 
   useEffect(() => {
     if (formData.respondentLanguage.length > 0 && formData.respondentCountry && formData.sessions.length > 0) {
@@ -63,7 +66,7 @@ const Step3: React.FC<Step3Props> = ({ formData, updateFormData, setDisableNext 
   const [otherCountry, setOtherCountry] = useState<string>(
     isInitiallyOther ? formData.respondentCountry : ""
   );
-
+const [otherCountryError, setOtherCountryError] = useState<string>("");
   // ========= Sessions =========
   const [sessionRows, setSessionRows] = useState<SessionRow[]>(
     () =>
@@ -76,7 +79,14 @@ const Step3: React.FC<Step3Props> = ({ formData, updateFormData, setDisableNext 
 
   // ========= Update Parent State =========
   useEffect(() => {
- 
+ if (!validateProjectName()) {
+    return;
+  }
+
+      if (selectedLanguages.includes("Other") && !validateOtherLanguage()) {
+      return;
+    }
+
     const computedLanguages = selectedLanguages.includes("Other")
       ? [
           ...selectedLanguages.filter((lang) => lang !== "Other"),
@@ -84,6 +94,13 @@ const Step3: React.FC<Step3Props> = ({ formData, updateFormData, setDisableNext 
         ]
       : selectedLanguages;
 
+       if (countrySelection === "Other" && !validateOtherCountry()) {
+    return;
+  }
+  // if “Other Language” is invalid, skip too
+  if (selectedLanguages.includes("Other") && !validateOtherLanguage()) {
+    return;
+  }
     const finalCountry =
       countrySelection === "USA" ? "USA" : otherCountry.trim();
 
@@ -126,11 +143,85 @@ const Step3: React.FC<Step3Props> = ({ formData, updateFormData, setDisableNext 
   };
 
   const handleOtherCountryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //if it is character a-z and A-Z then allow else return
-    if (/^[a-zA-Z]+$/.test(e.target.value)) {
-      setOtherCountry(e.target.value);
+    setOtherCountry(e.target.value);
+
+     if (otherCountryError) {
+    setOtherCountryError("");
+  }
+  };
+
+   const handleOtherLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value;
+    setOtherLanguage(v);
+
+    // clear error as user types
+    if (otherLangError) {
+      setOtherLangError("");
     }
   };
+
+  const validateOtherLanguage = () => {
+    if (!otherLanguage.trim()) {
+      setOtherLangError("Please enter a language.");
+      return false;
+    }
+    if (!ALPHA_REGEX.test(otherLanguage.trim())) {
+      setOtherLangError("Only letters and spaces are allowed.");
+      return false;
+    }
+    setOtherLangError("");
+    return true;
+  };
+
+  // Hook into your wizard’s “next” step button (if you have one) or 
+  // run this on blur:
+  const handleOtherLanguageBlur = () => {
+    if (selectedLanguages.includes("Other")) {
+      validateOtherLanguage();
+    }
+  };
+
+const validateOtherCountry = () => {
+  const trimmed = otherCountry.trim();
+  if (!trimmed) {
+    setOtherCountryError("Please enter a country.");
+    return false;
+  }
+  if (!ALPHA_REGEX.test(trimmed)) {
+    setOtherCountryError("Only letters and spaces are allowed.");
+    return false;
+  }
+  setOtherCountryError("");
+  return true;
+};
+
+const handleOtherCountryBlur = () => {
+  if (countrySelection === "Other") {
+    validateOtherCountry();
+  }
+}
+
+const validateProjectName = () => {
+  const trimmed = projectName.trim();
+
+  if (!trimmed) {
+    setProjectNameError("Project name is required.");
+    return false;
+  }
+  if (!PROJECT_NAME_REGEX.test(trimmed)) {
+    setProjectNameError(
+      "Only letters, numbers, spaces, dashes, and underscores allowed."
+    );
+    return false;
+  }
+  setProjectNameError("");
+  return true;
+};
+
+const handleProjectNameBlur = () => {
+  validateProjectName();
+};
+
 
   return (
     <div className="space-y-6">
@@ -139,11 +230,18 @@ const Step3: React.FC<Step3Props> = ({ formData, updateFormData, setDisableNext 
         <Label className="text-sm font-medium">Project Name*</Label>
         <Input
           type="text"
-          className="mt-1 w-full"
+          className={`mt-1 w-full ${projectNameError ? "border-red-500" : ""}`}
           value={projectName}
-          onChange={(e) => setProjectName(e.target.value)}
+           onChange={(e) => {
+        setProjectName(e.target.value);
+        if (projectNameError) setProjectNameError("");
+      }}
+      onBlur={handleProjectNameBlur}
           required
         />
+          {projectNameError && (
+     <p className="text-red-500 text-sm mt-1">{projectNameError}</p>
+   )}
       </div>
       {/* Multi-Select for Languages using Popover and Command */}
       <div>
@@ -184,13 +282,10 @@ const Step3: React.FC<Step3Props> = ({ formData, updateFormData, setDisableNext 
               type="text"
               className="mt-1 w-full"
               value={otherLanguage}
-              onChange={(e) => {
-                //if it is character a-z and A-Z then allow else return
-                if (/^[a-zA-Z]+$/.test(e.target.value)) {
-                  setOtherLanguage(e.target.value);
-                }
-              }}
+              onChange={handleOtherLanguageChange}
+            onBlur={handleOtherLanguageBlur}
             />
+            
           </div>
         )}
         {formData.service === "Concierge" && (
@@ -221,10 +316,14 @@ const Step3: React.FC<Step3Props> = ({ formData, updateFormData, setDisableNext 
             <Label className="text-sm font-medium">Specify Country Name</Label>
             <Input
               type="text"
-              className="mt-1 w-full"
-              value={otherCountry}
-              onChange={handleOtherCountryChange}
+               className={`mt-1 w-full ${otherCountryError ? "border-red-500" : ""}`}
+           value={otherCountry}
+           onChange={handleOtherCountryChange}
+           onBlur={handleOtherCountryBlur}
             />
+            {otherCountryError && (
+         <p className="text-red-500 text-sm">{otherCountryError}</p>
+        )}
           </div>
         )}
       </div>

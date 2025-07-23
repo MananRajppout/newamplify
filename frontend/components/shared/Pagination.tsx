@@ -3,6 +3,8 @@ import { Pagination,
   PaginationContent,
   PaginationItem,
   PaginationLink, } from "components/ui/pagination";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import getPages from "utils/getPages";
 
 export default function CustomPagination({
   totalPages,
@@ -13,56 +15,34 @@ export default function CustomPagination({
   currentPage: number;
   onPageChange: (page: number) => void;
 }) {
-  const generatePages = (): (number | "…")[] => {
-    // If total pages is 7 or less, show all pages
-    if (totalPages <= 7) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
-    }
-
-    const pages: (number | "…")[] = [];
-    
-    // Always show first page
-    pages.push(1);
-    
-    if (currentPage <= 3) {
-      // If current page is near the beginning (1, 2, 3)
-      // Show: 1, 2, 3, 4, ..., last
-      pages.push(2, 3, 4);
-      if (totalPages > 5) {
-        pages.push("…");
-      }
-      if (totalPages > 4) {
-        pages.push(totalPages);
-      }
-    } else if (currentPage >= totalPages - 2) {
-      // If current page is near the end
-      // Show: 1, ..., last-3, last-2, last-1, last
-      if (totalPages > 4) {
-        pages.push("…");
-      }
-      pages.push(totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
-    } else {
-      // Current page is in the middle
-      // Show: 1, ..., current-1, current, current+1, ..., last
-      pages.push("…");
-      pages.push(currentPage - 1, currentPage, currentPage + 1);
-      pages.push("…");
-      pages.push(totalPages);
-    }
-    
-    // Remove duplicates and filter out invalid pages
-    const uniquePages = pages.filter((page, index, arr) => {
-      if (typeof page === "string") return true;
-      return page >= 1 && page <= totalPages && arr.indexOf(page) === index;
-    });
-    
-    return uniquePages;
-  };
-
-  const pages = generatePages();
-
+ 
+    const pages = getPages(totalPages, currentPage);
+  const isFirst = currentPage === 1;
+  const isLast = currentPage === totalPages;
   return (
-    <Pagination className="flex mt-6">
+    <Pagination className="flex mt-6 list-none p-">
+      {/* ← Previous */}
+       <PaginationItem>
+        <PaginationLink
+          href="#"
+          // semantic disabled
+          aria-disabled={isFirst}
+          // visually disable & block clicks
+          className={`p-2 rounded ${
+            isFirst
+              ? "pointer-events-none opacity-50"
+              : "hover:bg-gray-100"
+          }`}
+          onClick={(e) => {
+            e.preventDefault();
+            if (!isFirst) onPageChange(currentPage - 1);
+          }}
+        >
+          {/* replace text with the Lucide icon */}
+          <ChevronLeft className="w-4 h-4" />
+        </PaginationLink>
+      </PaginationItem>
+
       <PaginationContent>
         {pages.map((p, idx) =>
           typeof p === "number" ? (
@@ -93,6 +73,25 @@ export default function CustomPagination({
           )
         )}
       </PaginationContent>
+
+      {/* Next → */}
+              <PaginationItem>
+        <PaginationLink
+          href="#"
+          aria-disabled={isLast}
+          className={`p-2 rounded ${
+            isLast
+              ? "pointer-events-none opacity-50"
+              : "hover:bg-gray-100"
+          }`}
+          onClick={(e) => {
+            e.preventDefault();
+            if (!isLast) onPageChange(currentPage + 1);
+          }}
+        >
+          <ChevronRight className="w-4 h-4" />
+        </PaginationLink>
+      </PaginationItem>
     </Pagination>
   );
 }
